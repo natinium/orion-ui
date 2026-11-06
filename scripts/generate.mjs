@@ -103,7 +103,9 @@ if (dryRun) {
 }
 
 // ── 1. component skeleton (quality floor — extend, don't rewrite) ────────────
-const componentTsx = `import * as React from 'react';
+const componentTsx = `'use client';
+
+import * as React from 'react';
 
 import { cn } from '../lib/utils';
 
@@ -158,8 +160,8 @@ describe('${Pascal}', () => {
 
 // ── 3. docs page with live preview ───────────────────────────────────────────
 const docsMdx = `---
-title: ${title}
-description: ${description}
+title: "${title}"
+description: "${description}"
 ---
 
 import { ${Pascal} } from '@orion-ui/registry';
