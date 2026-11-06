@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+:root {
+  --orion-g1: #8b7dff;
+  --orion-g2: #22d3ee;
+}

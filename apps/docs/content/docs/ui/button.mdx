@@ -1,0 +1,47 @@
+---
+title: Button
+description: Displays a button or a component that looks like a button.
+---
+
+import { Button } from '@orion-ui/registry';
+
+## Preview
+
+<div className="not-prose flex flex-wrap items-center gap-3 py-4">
+  <Button>Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="outline">Outline</Button>
+  <Button variant="ghost">Ghost</Button>
+  <Button variant="destructive">Destructive</Button>
+  <Button variant="link">Link</Button>
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/button.json
+```
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button'
+```
+
+```tsx
+<Button variant="outline">Click me</Button>
+```
+
+## API
+
+Properts are forwarded to the underlying element. Use `asChild` to render your own element
+(a link, for example) with the button's styles.
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | `default` \| `secondary` \| `outline` \| `ghost` \| `destructive` \| `link` | `default` |
+| `size` | `default` \| `sm` \| `lg` \| `icon` | `default` |
+| `asChild` | `boolean` | `false` |
+
+Every Orion component ships with: TypeScript types, dark/light parity, WCAG AA keyboard and
+focus behavior, and a passing test suite written before the implementation.
