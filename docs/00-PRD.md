@@ -52,21 +52,21 @@
 
 ## 6. Success metrics (honest bands)
 
-| Metric | Target | Source / method |
-|---|---|---|
-| GitHub stars @ 6 months | **300–800 = median launch; 1,000–1,500 = excellent** (requires an HN front-page hit + an unowned wedge). 10k in 6 months is not a credible target — the only sub-1-year 10k case is Vercel-backed shadcn itself. | Calibration [CAL:91, PHASE3-IDEAS-AI-DEVTOOLS.md:16]. Measured monthly from launch, published, dated. |
-| Registry installs via CLI | Measured from server-side `/r/*.json` request counts plus install smoke tests. **Numeric targets not yet calibrated** — founder decision; never reported as inference. | DOS §3 step 7 (hourly `/r` + sitemap uptime curl). |
-| Accessibility pass rate | **100%** — a gate, not a vanity number: the axe assertion is part of the RED-first test per component; a failing axe blocks the run. | DOS §3 step 1; PP §12 fix. |
-| Registry install time | Published: cold `npx shadcn add` vs shadcn/ui, Magic UI, Kibo, coss ui (the fetched comparator set). Thresholds belong to BENCHMARKS. | DOS §4.4 (1). |
-| Docs Lighthouse | Weekly CI run, published. Thresholds belong to BENCHMARKS. | DOS §4.4 (2), the assistant-ui discipline. |
-| Per-item quality gate | 100% of shipped entries pass: axe + light/dark visual + brand tokens. | DOS §4.4 (3); the run card. |
-| Freshness/status | Public status line: `/r`, sitemap, MCP uptime; pushed-at freshness. No peer publishes one today. | DOS §4.4 (4); PP §5 mitigation. |
+| Metric                    | Target                                                                                                                                                                                                           | Source / method                                                                                       |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| GitHub stars @ 6 months   | **300–800 = median launch; 1,000–1,500 = excellent** (requires an HN front-page hit + an unowned wedge). 10k in 6 months is not a credible target — the only sub-1-year 10k case is Vercel-backed shadcn itself. | Calibration [CAL:91, PHASE3-IDEAS-AI-DEVTOOLS.md:16]. Measured monthly from launch, published, dated. |
+| Registry installs via CLI | Measured from server-side `/r/*.json` request counts plus install smoke tests. **Numeric targets not yet calibrated** — founder decision; never reported as inference.                                           | DOS §3 step 7 (hourly `/r` + sitemap uptime curl).                                                    |
+| Accessibility pass rate   | **100%** — a gate, not a vanity number: the axe assertion is part of the RED-first test per component; a failing axe blocks the run.                                                                             | DOS §3 step 1; PP §12 fix.                                                                            |
+| Registry install time     | Published: cold `npx shadcn add` vs shadcn/ui, Magic UI, Kibo, coss ui (the fetched comparator set). Thresholds belong to BENCHMARKS.                                                                            | DOS §4.4 (1).                                                                                         |
+| Docs Lighthouse           | Weekly CI run, published. Thresholds belong to BENCHMARKS.                                                                                                                                                       | DOS §4.4 (2), the assistant-ui discipline.                                                            |
+| Per-item quality gate     | 100% of shipped entries pass: axe + light/dark visual + brand tokens.                                                                                                                                            | DOS §4.4 (3); the run card.                                                                           |
+| Freshness/status          | Public status line: `/r`, sitemap, MCP uptime; pushed-at freshness. No peer publishes one today.                                                                                                                 | DOS §4.4 (4); PP §5 mitigation.                                                                       |
 
 ## 7. Scope
 
-**7.1 Done — Run 0 (vertical slice).** Monorepo (Turborepo + Yarn 4 vendored, node-modules resolution), `apps/docs` (Next.js + Fumadocs), `packages/registry`, `scripts/build-registry.mjs`, and **Button** shipped test-first (`packages/registry/src/ui/button.tsx`, `packages/registry/tests/button.test.tsx` — file presence verified 2026-11-06). README:13-15 records Run 0 as current status, "deployed and verified end to end"; its gate was the 8 exit criteria [DOS §3]. *Caveat:* this local checkout contains no `.git` (git log fails), so I verified file presence — not history or CI.
+**7.1 Done — Run 0 (vertical slice).** Monorepo (Turborepo + Yarn 4 vendored, node-modules resolution), `apps/docs` (Next.js + Fumadocs), `packages/registry`, `scripts/build-registry.mjs`, and **Button** shipped test-first (`packages/registry/src/ui/button.tsx`, `packages/registry/tests/button.test.tsx` — file presence verified 2026-11-06). README:13-15 records Run 0 as current status, "deployed and verified end to end"; its gate was the 8 exit criteria [DOS §3]. _Caveat:_ this local checkout contains no `.git` (git log fails), so I verified file presence — not history or CI.
 
-**7.2 Next — Wave 1, Ring 1 first.** Ring-1 themes [DOS §2]: chat shell, composer, message pair, streaming states, markdown/code, error, empty, model selector. Instantiated in catalog slugs: `chat-shell` #1 (which itself carries the empty + connection states), `message-pair` #7, `message-error` #10, `streaming-states` #11, `markdown-message` #12, `prompt-input` #31, `model-selector` #27. *The catalog tags rings by theme, not per-row; exact Ring-1 membership (e.g. whether #8, #9, #32 ride Ring 1) is fixed at wave-1 kickoff in 01-DESIGN.*
+**7.2 Next — Wave 1, Ring 1 first.** Ring-1 themes [DOS §2]: chat shell, composer, message pair, streaming states, markdown/code, error, empty, model selector. Instantiated in catalog slugs: `chat-shell` #1 (which itself carries the empty + connection states), `message-pair` #7, `message-error` #10, `streaming-states` #11, `markdown-message` #12, `prompt-input` #31, `model-selector` #27. _The catalog tags rings by theme, not per-row; exact Ring-1 membership (e.g. whether #8, #9, #32 ride Ring 1) is fixed at wave-1 kickoff in 01-DESIGN._
 
 **Why Ring 1 first:** the official 21 AI patterns define the comparison floor users will judge against [DOS §2, citing AI-SECTIONS §8].
 
@@ -78,13 +78,13 @@
 
 ## 8. Wave plan (verified: re-run 2026-11-06 → `w1=41 w2=34 w3=29 w4=24 total=128`)
 
-| Wave | Theme | Entries | ★ gap entries |
-|---|---|---|---|
-| 1 | AI app UI — 3 rings | 41 | 15 |
-| 2 | Advanced primitives — data, planning, files, editing, social, states, settings, media, charts, motion | 34 | 5 |
-| 3 | App sections — auth, settings, billing, team, dashboard, compliance, account | 29 | 3 |
-| 4 | Marketing sections — hero, features, social proof, pricing, content, nav, conversion | 24 | 2 |
-| | **Total** | **128** | **25** |
+| Wave | Theme                                                                                                 | Entries | ★ gap entries |
+| ---- | ----------------------------------------------------------------------------------------------------- | ------- | ------------- |
+| 1    | AI app UI — 3 rings                                                                                   | 41      | 15            |
+| 2    | Advanced primitives — data, planning, files, editing, social, states, settings, media, charts, motion | 34      | 5             |
+| 3    | App sections — auth, settings, billing, team, dashboard, compliance, account                          | 29      | 3             |
+| 4    | Marketing sections — hero, features, social proof, pricing, content, nav, conversion                  | 24      | 2             |
+|      | **Total**                                                                                             | **128** | **25**        |
 
 Scope rules: variants ride entries as free example sub-pages and are never counted separately [CAT §0.1]; a section wave lands only after its component wave is stable [DOS §3]; a deferred backlog is named for wave 5 [CAT §5]. The 25 ★ entries and their verified gap bases are ledgered in [CAT §6].
 

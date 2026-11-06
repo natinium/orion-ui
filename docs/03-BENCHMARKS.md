@@ -12,13 +12,13 @@ published record (see "The honesty rule").
 
 ## Run 0 scoreboard (honest states, 2026-11-06)
 
-| # | Benchmark | Target | Status today |
-|---|---|---|---|
-| 1 | Registry install time | median ≤ official shadcn median + run noise; published | not measured (no script) |
-| 2 | Bundle size per item | published vs shadcn equivalent; >5% regression gated | [seed] Button 10,859 B gzip (hand-run, not CI) |
-| 3 | axe-core violations | 0, whole catalog, light + dark | not wired; vitest suite cannot start (unmet `vite` peer) |
-| 4 | Docs Lighthouse | all 4 categories ≥ 95 | not run; no Lighthouse step in CI |
-| 5 | TS strict + zero `any` | 0 errors · 0 `any` | `any`: 0 ✓ · strict: 3 errors, published as broken |
+| #   | Benchmark              | Target                                                 | Status today                                             |
+| --- | ---------------------- | ------------------------------------------------------ | -------------------------------------------------------- |
+| 1   | Registry install time  | median ≤ official shadcn median + run noise; published | not measured (no script)                                 |
+| 2   | Bundle size per item   | published vs shadcn equivalent; >5% regression gated   | [seed] Button 10,859 B gzip (hand-run, not CI)           |
+| 3   | axe-core violations    | 0, whole catalog, light + dark                         | not wired; vitest suite cannot start (unmet `vite` peer) |
+| 4   | Docs Lighthouse        | all 4 categories ≥ 95                                  | not run; no Lighthouse step in CI                        |
+| 5   | TS strict + zero `any` | 0 errors · 0 `any`                                     | `any`: 0 ✓ · strict: 3 errors, published as broken       |
 
 ## The honesty rule (applies to all five)
 
@@ -138,10 +138,12 @@ published record (see "The honesty rule").
   (b) count of `any` in `packages/registry/src/**` and `scripts/**`
   (scan below; `@typescript-eslint/no-explicit-any` takes over when ESLint lands).
 - **Method (command):** CI job `typecheck`:
+
   ```
   node node_modules/typescript/bin/tsc --noEmit -p packages/registry/tsconfig.json
   grep -rnE ':\s*any\b|as any\b|<any>|any\[\]' packages/registry/src/ scripts/ | wc -l   # must be 0
   ```
+
   The script writes the count to `benchmarks/types.json`; the badge reads that
   file — the docs page never hand-edits it.
 - **Comparator:** none — absolute bar. Context: shadcn ships no component-level tests

@@ -24,8 +24,8 @@ export default function Home() {
           Orion <span className="text-[var(--orion-g1)]">UI</span>
         </h1>
         <p className="mt-4 max-w-xl text-balance text-lg text-zinc-400">
-          The comprehensive, free (MIT), shadcn-based registry — every component, section and
-          AI-app surface a web app needs.
+          The comprehensive, free (MIT), shadcn-based registry — every component, section and AI-app
+          surface a web app needs.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link

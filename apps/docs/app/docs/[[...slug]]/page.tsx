@@ -1,6 +1,6 @@
-import { source } from '@/app/source';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page';
 import { notFound } from 'next/navigation';
+import { source } from '@/app/source';
 
 export default async function Page(props: { params: Promise<{ slug?: string[] }> }) {
   const { slug } = await props.params;

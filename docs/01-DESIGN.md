@@ -77,7 +77,7 @@ as the docs — no npm, no API, no server (GEN §1; kokonut raw-URL pattern, GEN
 **Upgrade path — two steps, in order, per the shadcn blueprint (CLONE §3):**
 
 1. **Zod validation before emit.** shadcn's own build validates every base against the registry
-   schema (zod, from `shadcn/schema`) *before emitting* and fails fast on drift
+   schema (zod, from `shadcn/schema`) _before emitting_ and fails fast on drift
    (CLONE §3, their `build-registry.mts:886-894`). Orion's current guard is a jq smoke check in CI
    (`.github/workflows/ci.yml`, "Validate registry JSON" step); the planned upgrade is zod
    validation inside `build-registry.mjs` — already pre-registered as the example commit
@@ -103,14 +103,14 @@ decision, not silently assumed either way here.
 Every `registry:ui` component follows the shadcn v4 anatomy recorded in CLONE §2 and already
 implemented by the reference implementation, `packages/registry/src/ui/button.tsx`:
 
-| Rule | Why (CLONE §2 evidence) | Button proof |
-|---|---|---|
-| **No `forwardRef`** — plain function, `React.ComponentProps<'el'>` props | shadcn v4 dropped forwardRef/interface-extends; React 19 passes `ref` as a prop | `button.tsx:53-62` |
-| **`data-slot` + `data-variant` + `data-size` on every rendered element** | styling/test hooks for descendants | `button.tsx:67-69` |
-| **cva variants with consumer `className` merged LAST** | consumer overrides win | `button.tsx:70` — `cn(buttonVariants({ variant, size, className }))` |
-| **`radix-ui` monopackage** for primitives (`import { Slot } from 'radix-ui'`) | shadcn v4 imports Slot from the monopackage, not per-package | `button.tsx:2`; dep `radix-ui 1.8.1` (`packages/registry/package.json`) |
-| **JSDoc on every component and every exported variant fn** | shadcn ships **zero** JSDoc, magicui ships full prop docs — Orion closes the gap deliberately (CLONE §7.4) | `button.tsx:7-10,38-52` |
-| Export both component and `<x>Variants` | consumers compose custom elements | `button.tsx:76` |
+| Rule                                                                          | Why (CLONE §2 evidence)                                                                                    | Button proof                                                            |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **No `forwardRef`** — plain function, `React.ComponentProps<'el'>` props      | shadcn v4 dropped forwardRef/interface-extends; React 19 passes `ref` as a prop                            | `button.tsx:53-62`                                                      |
+| **`data-slot` + `data-variant` + `data-size` on every rendered element**      | styling/test hooks for descendants                                                                         | `button.tsx:67-69`                                                      |
+| **cva variants with consumer `className` merged LAST**                        | consumer overrides win                                                                                     | `button.tsx:70` — `cn(buttonVariants({ variant, size, className }))`    |
+| **`radix-ui` monopackage** for primitives (`import { Slot } from 'radix-ui'`) | shadcn v4 imports Slot from the monopackage, not per-package                                               | `button.tsx:2`; dep `radix-ui 1.8.1` (`packages/registry/package.json`) |
+| **JSDoc on every component and every exported variant fn**                    | shadcn ships **zero** JSDoc, magicui ships full prop docs — Orion closes the gap deliberately (CLONE §7.4) | `button.tsx:7-10,38-52`                                                 |
+| Export both component and `<x>Variants`                                       | consumers compose custom elements                                                                          | `button.tsx:76`                                                         |
 
 Additional standing rules: `asChild` via Slot (`button.tsx:63`); semantic tokens only
 (`bg-primary`, `ring-ring/50`) — never hardcoded hex/palette classes in sources (GEN §2 step 3
@@ -149,16 +149,16 @@ git repository on this machine).
 
 Canonical checklist (GEN §2); `CONTRIBUTING.md:117` points here. A failing gate = stop.
 
-| # | Step | Gate command | Status in repo today |
-|---|---|---|---|
-| 0 | **GEN** — scaffold files + card (`yarn gen component <slug> --wave N`; designed GEN §3, not yet built — Run 0 was manual) | files exist, RED test in place | gen.mjs absent |
-| 1 | **RED** — test written first: render, variants, keyboard, axe, dark hook | `yarn vitest run` → **fails** | vitest 5.1.0 + RTL configured; Button has 5 passing-by-design cases (`packages/registry/tests/button.test.tsx`) — not run this session, §8 |
-| 2 | **GREEN** — implement on the shadcn base (§3 contract) | same command → **passes** | proven by Button |
-| 3 | **VISUAL** — light+dark screenshots at 1280px (sections also 768/375); 5-point brand-token check (chroma-0 neutrals, one accent, parity, no hardcoded hex, focus ring) | `yarn playwright test … && yarn check:brand` | Playwright + check-brand not yet in repo |
-| 4 | **DOCS** — MDX page with live preview + auto-generated code (never hand-maintained) | `yarn build && open /docs/components/<slug>` | Button MDX live-renders via workspace import (`content/docs/ui/button.mdx`); `ComponentPreview` reading `/r/*.json` not yet built |
-| 5 | **REGISTRY** — entry validates: official schema + lint | `yarn validate:registry` | jq smoke check in CI ✅; zod validate:registry pending (§2) |
-| 6 | **RELEASE** — changeset stub, semver: new item = minor, variant/example = patch, breaking = major | `yarn changeset status` | `.changeset/` not yet set up |
-| 7 | **SHIP** — PR CI green → docs preview URL → merge → release tags + prod deploy | CI green; tag exists | CI exists; release/uptime workflows pending |
+| #   | Step                                                                                                                                                                   | Gate command                                 | Status in repo today                                                                                                                       |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 0   | **GEN** — scaffold files + card (`yarn gen component <slug> --wave N`; designed GEN §3, not yet built — Run 0 was manual)                                              | files exist, RED test in place               | gen.mjs absent                                                                                                                             |
+| 1   | **RED** — test written first: render, variants, keyboard, axe, dark hook                                                                                               | `yarn vitest run` → **fails**                | vitest 5.1.0 + RTL configured; Button has 5 passing-by-design cases (`packages/registry/tests/button.test.tsx`) — not run this session, §8 |
+| 2   | **GREEN** — implement on the shadcn base (§3 contract)                                                                                                                 | same command → **passes**                    | proven by Button                                                                                                                           |
+| 3   | **VISUAL** — light+dark screenshots at 1280px (sections also 768/375); 5-point brand-token check (chroma-0 neutrals, one accent, parity, no hardcoded hex, focus ring) | `yarn playwright test … && yarn check:brand` | Playwright + check-brand not yet in repo                                                                                                   |
+| 4   | **DOCS** — MDX page with live preview + auto-generated code (never hand-maintained)                                                                                    | `yarn build && open /docs/components/<slug>` | Button MDX live-renders via workspace import (`content/docs/ui/button.mdx`); `ComponentPreview` reading `/r/*.json` not yet built          |
+| 5   | **REGISTRY** — entry validates: official schema + lint                                                                                                                 | `yarn validate:registry`                     | jq smoke check in CI ✅; zod validate:registry pending (§2)                                                                                |
+| 6   | **RELEASE** — changeset stub, semver: new item = minor, variant/example = patch, breaking = major                                                                      | `yarn changeset status`                      | `.changeset/` not yet set up                                                                                                               |
+| 7   | **SHIP** — PR CI green → docs preview URL → merge → release tags + prod deploy                                                                                         | CI green; tag exists                         | CI exists; release/uptime workflows pending                                                                                                |
 
 Run 0 exit criteria (clean-clone install, RED commit in history, deployed `/r` curl, throwaway
 install test, `yarn verify` alias) are listed in GEN §1b and remain the bar before wave

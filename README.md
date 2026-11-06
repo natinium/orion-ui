@@ -44,7 +44,7 @@ node .yarn/releases/yarn-4.18.1.cjs turbo run test build
 
 ## Roadmap
 
-- **Run 0** — vertical slice: docs + registry + Button, deployed and E2E-verified ← *you are here*
+- **Run 0** — vertical slice: docs + registry + Button, deployed and E2E-verified ← _you are here_
 - **Wave 1** — AI app UI (~25 blocks): chat, agent traces, model pickers, token meters
 - **Wave 2** — advanced primitives (~30)
 - **Wave 3** — app sections (~25)

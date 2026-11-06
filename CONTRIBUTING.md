@@ -43,31 +43,31 @@ Format:
 
 ### Types
 
-| Type | Meaning | Version impact |
-|---|---|---|
-| `feat` | New component, section, or capability | MINOR |
-| `fix` | Bug fix in existing code | PATCH |
-| `perf` | Performance improvement (benchmarks in body) | PATCH |
-| `docs` | Documentation only (README, docs site content) | — |
-| `test` | Tests only (adding/adjusting tests, no production change) | — |
-| `refactor` | Code change that is neither feat nor fix | — |
-| `style` | Formatting, class order — no logic change | — |
-| `build` | Build system, registry build script, dependency changes | — |
-| `ci` | CI/workflow changes | — |
-| `chore` | Maintenance that touches no src or test files | — |
-| `revert` | Reverts a previous commit | — |
+| Type       | Meaning                                                   | Version impact |
+| ---------- | --------------------------------------------------------- | -------------- |
+| `feat`     | New component, section, or capability                     | MINOR          |
+| `fix`      | Bug fix in existing code                                  | PATCH          |
+| `perf`     | Performance improvement (benchmarks in body)              | PATCH          |
+| `docs`     | Documentation only (README, docs site content)            | —              |
+| `test`     | Tests only (adding/adjusting tests, no production change) | —              |
+| `refactor` | Code change that is neither feat nor fix                  | —              |
+| `style`    | Formatting, class order — no logic change                 | —              |
+| `build`    | Build system, registry build script, dependency changes   | —              |
+| `ci`       | CI/workflow changes                                       | —              |
+| `chore`    | Maintenance that touches no src or test files             | —              |
+| `revert`   | Reverts a previous commit                                 | —              |
 
 ### Scopes (defined — always use one for registry/docs/build changes)
 
-| Scope | Covers |
-|---|---|
+| Scope      | Covers                                                     |
+| ---------- | ---------------------------------------------------------- |
 | `registry` | `packages/registry/**` — components, sections, their tests |
-| `docs` | `apps/docs/**` — the Fumadocs site and its content |
-| `scripts` | `scripts/**` — registry build, codegen |
-| `ci` | `.github/**`, deploy config |
-| `deps` | Package manifest changes across the monorepo |
-| `repo` | Root config: turbo, yarn, license, README |
-| `brand` | `docs/02-BRAND.md` and visual-identity assets |
+| `docs`     | `apps/docs/**` — the Fumadocs site and its content         |
+| `scripts`  | `scripts/**` — registry build, codegen                     |
+| `ci`       | `.github/**`, deploy config                                |
+| `deps`     | Package manifest changes across the monorepo               |
+| `repo`     | Root config: turbo, yarn, license, README                  |
+| `brand`    | `docs/02-BRAND.md` and visual-identity assets              |
 
 ### Subject rules
 
@@ -130,3 +130,25 @@ Registry components follow the TDD run card (see `docs/01-DESIGN.md` §5):
 - [ ] Variants via cva, consumer `className` merged last
 - [ ] Dark/light parity · WCAG AA keyboard + focus
 - [ ] Test-first suite green · docs page with live preview · registry JSON valid
+
+## Tooling
+
+- **Biome** (lint + format — not ESLint/Prettier): `yarn lint` checks, `yarn format` fixes.
+  Config: `biome.json`. CI and pre-commit both run it; a red check blocks the merge.
+- **Git hooks (husky)**: `pre-commit` runs lint-staged (Biome on staged files);
+  `commit-msg` runs commitlint — a non-conventional message is rejected on the spot.
+- **commitlint**: scopes are enforced (see the table above); unknown scopes fail.
+- **Generator** — scaffold a new catalog entry (component or section) with one command:
+
+  ```bash
+  yarn gen component chat-shell --title "Chat Shell" \
+    --description "Full-page chat layout with thread list and streaming" \
+    --category "chat" --builds-on "message,message-scroller" --wave 1
+  yarn gen section hero --title "Hero" --description "Landing hero" \
+    --category "hero" --wave 4
+  ```
+
+  It writes the test (contract), the implementation skeleton (quality floor), the docs
+  page, and registers the item in the registry build — then you implement. Flags:
+  `--title` (required), `--description` (required), `--category`, `--builds-on`,
+  `--deps` (npm dependencies to declare), `--wave`, `--dry-run`.

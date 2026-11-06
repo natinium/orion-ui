@@ -98,7 +98,7 @@ Repo: <link>. Docs: <link>. Feedback welcome — especially on the AI wave.
 
 ## 4 · README "Why Orion?" — paste-ready
 
-````markdown
+```markdown
 ## Why Orion?
 
 shadcn/ui's most-reacted open issue is a missing component —
@@ -136,7 +136,7 @@ registry items instead. Every wave is held to these commitments:
 > Status today: **Run 0** — the vertical slice (repo, docs, registry pipeline,
 > Button) is live; waves land per the [roadmap](#roadmap). The promises above are
 > the bar each wave must clear before it ships.
-````
+```
 
 ---
 
