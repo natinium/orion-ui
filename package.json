@@ -9,11 +9,27 @@
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
-    "lint": "turbo run lint",
+    "lint": "biome check .",
+    "format": "biome check --write .",
     "dev": "turbo run dev",
-    "registry:build": "node scripts/build-registry.mjs"
+    "gen": "node scripts/generate.mjs",
+    "registry:build": "node scripts/build-registry.mjs",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,mjs,ts,tsx}": [
+      "biome check --write --no-errors-on-unmatched"
+    ],
+    "*.{json,css}": [
+      "biome format --write --no-errors-on-unmatched"
+    ]
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.5",
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "husky": "9.1.6",
+    "lint-staged": "17.5.1",
     "turbo": "2.11.10"
   }
 }
