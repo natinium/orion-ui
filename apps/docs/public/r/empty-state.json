@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-state",
+  "type": "registry:ui",
+  "title": "Empty State",
+  "description": "Zero-data placeholder with icon, title, description and an action slot — the graceful first impression of every empty screen.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/empty-state.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from 'react';\n\nimport { cn } from '../lib/utils';\n\n/**\n * Empty State — zero-data placeholder with icon, title, description and an\n * action slot. Compose it: media/title/description/actions as children.\n *\n * @example\n * <EmptyState>\n *   <EmptyStateMedia>📄</EmptyStateMedia>\n *   <EmptyStateTitle>No files yet</EmptyStateTitle>\n *   <EmptyStateDescription>Upload your first file to get started.</EmptyStateDescription>\n *   <EmptyStateAction><Button>Upload</Button></EmptyStateAction>\n * </EmptyState>\n */\nfunction EmptyState({ className, children, ...props }: React.ComponentProps<'div'>) {\n  return (\n    <div\n      data-slot=\"empty-state\"\n      className={cn(\n        'relative flex min-h-52 w-full flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-8 text-center',\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}\n\n/** The icon/media slot — a muted circular holder for an icon or image. */\nfunction EmptyStateMedia({ className, ...props }: React.ComponentProps<'div'>) {\n  return (\n    <div\n      data-slot=\"empty-state-media\"\n      className={cn(\n        'flex size-11 items-center justify-center rounded-full border bg-muted/40 text-muted-foreground [&_svg:not([class*=\"size-\"])]:size-5',\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\n/** The title slot — the short \"what is empty\" statement. */\nfunction EmptyStateTitle({ className, ...props }: React.ComponentProps<'h3'>) {\n  return (\n    <h3\n      data-slot=\"empty-state-title\"\n      className={cn('text-base font-semibold leading-none tracking-tight', className)}\n      {...props}\n    />\n  );\n}\n\n/** The description slot — one or two lines of guidance. */\nfunction EmptyStateDescription({ className, ...props }: React.ComponentProps<'p'>) {\n  return (\n    <p\n      data-slot=\"empty-state-description\"\n      className={cn('max-w-sm text-balance text-sm text-muted-foreground', className)}\n      {...props}\n    />\n  );\n}\n\n/** The action slot — primary and secondary actions for the next step. */\nfunction EmptyStateAction({ className, ...props }: React.ComponentProps<'div'>) {\n  return (\n    <div\n      data-slot=\"empty-state-action\"\n      className={cn('flex flex-wrap items-center justify-center gap-2', className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  EmptyState,\n  EmptyStateAction,\n  EmptyStateDescription,\n  EmptyStateMedia,\n  EmptyStateTitle,\n};\n"
+    }
+  ],
+  "meta": {
+    "registry": "orion-ui",
+    "license": "MIT"
+  }
+}
