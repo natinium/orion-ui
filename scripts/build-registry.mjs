@@ -14,6 +14,12 @@ const OUT_DIR = resolve(ROOT, 'apps/docs/public/r');
 
 /** @type {Array<{ slug: string, title: string, description: string, source: string, target: string, type: string, dependencies: string[] }>} */
 const items = [
+  { slug: 'file-uploader', title: 'File Uploader', description: 'Dropzone with queue, per-file progress, retry and error states.', source: 'packages/registry/src/ui/file-uploader.tsx', target: 'ui/file-uploader.tsx', type: 'registry:ui', dependencies: [] },
+
+  { slug: 'time-picker', title: 'Time Picker', description: 'Time selection with hour/minute columns, 12/24h toggle, seconds granularity and timezone hint.', source: 'packages/registry/src/ui/time-picker.tsx', target: 'ui/time-picker.tsx', type: 'registry:ui', dependencies: [] },
+
+  { slug: 'input-extras', title: 'Input Extras', description: 'Form input recipes: multi-select combobox, tags input, rating, phone input — the most-requested missing pieces.', source: 'packages/registry/src/ui/input-extras.tsx', target: 'ui/input-extras.tsx', type: 'registry:ui', dependencies: [] },
+
   { slug: 'empty-state', title: 'Empty State', description: 'Zero-data placeholder with icon, title, description and an action slot — the graceful first impression of every empty screen.', source: 'packages/registry/src/ui/empty-state.tsx', target: 'ui/empty-state.tsx', type: 'registry:ui', dependencies: [] },
 
   {
