@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install (vendored Yarn 4)
+        run: node .yarn/releases/yarn-4.18.1.cjs install
+
+      - name: Test (TDD gate)
+        run: node .yarn/releases/yarn-4.18.1.cjs turbo run test
+
+      - name: Build registry + docs
+        run: node .yarn/releases/yarn-4.18.1.cjs turbo run build
+
+      - name: Validate registry JSON against the shadcn schema
+        run: |
+          for f in apps/docs/public/r/*.json; do
+            jq -e '.name and .type and .files[0].content' "$f" > /dev/null \
+              && echo "OK $f" || exit 1
+          done
