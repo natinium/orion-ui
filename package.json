@@ -1,0 +1,19 @@
+{
+  "name": "orion-ui",
+  "private": true,
+  "packageManager": "yarn@4.18.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev": "turbo run dev",
+    "registry:build": "node scripts/build-registry.mjs"
+  },
+  "devDependencies": {
+    "turbo": "2.11.10"
+  }
+}

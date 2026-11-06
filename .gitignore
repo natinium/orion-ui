@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+.yarn/*
+!.yarn/releases
+!.yarnrc.yml
+
+# next
+.next/
+out/
+next-env.d.ts
+
+# builds
+dist/
+.turbo/
+*.tsbuildinfo
+
+# envs
+.env
+.env*.local
+
+# misc
+.DS_Store
+*.log
+.vercel
+.source/
