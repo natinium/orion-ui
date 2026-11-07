@@ -1,0 +1,178 @@
+---
+title: "Chat Shell"
+description: "Full-page AI chat layouts in classic, workspace and focus variants — thread list, streaming message list and composer dock."
+---
+
+import { ChatComposer, ChatMessage, ChatMessageList, ChatShell, ChatThreadList } from '@orion-ui/registry/ui/chat-shell';
+
+## Preview
+
+The **workspace** variant: a thread sidebar, a scrolling live log with a
+streaming cursor on the last message, and a working composer — type a reply
+and press Enter to clear the draft.
+
+<div className="not-prose py-6">
+  <ChatShell variant="workspace" className="h-[32rem] rounded-xl border border-input">
+    <ChatThreadList
+      threads={[
+        {
+          id: 'design',
+          title: 'Design review',
+          preview: 'Can you check the latest mock?',
+          unread: 2,
+          timestamp: '09:41',
+        },
+        {
+          id: 'release',
+          title: 'Release notes',
+          preview: 'Draft for v0.9 is ready',
+          timestamp: '18:30',
+        },
+      ]}
+      activeId="design"
+    />
+    <ChatMessageList>
+      <ChatMessage sender="user" author="Natnael" timestamp="09:38">
+        Can you summarize the Q3 metrics?
+      </ChatMessage>
+      <ChatMessage sender="assistant" author="Assistant" timestamp="09:39">
+        Sure — revenue is up 14% quarter over quarter, driven by self-serve signups.
+      </ChatMessage>
+      <ChatMessage sender="assistant" author="Assistant" timestamp="09:41" streaming>
+        Generating the chart breakdown…
+      </ChatMessage>
+    </ChatMessageList>
+    <ChatComposer placeholder="Reply…" />
+  </ChatShell>
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/chat-shell.json
+```
+
+## Usage
+
+The shell is fully presentational: you own the threads, the messages and the
+send handler.
+
+```tsx
+import { ChatShell } from '@/components/ui/chat-shell'
+```
+
+```tsx
+const [activeId, setActiveId] = useState('design')
+const [messages, setMessages] = useState(initialMessages)
+
+<ChatShell variant="workspace" className="h-dvh">
+  <ChatThreadList threads={threads} activeId={activeId} onSelect={setActiveId} />
+  <ChatMessageList>
+    {messages.map((message) => (
+      <ChatMessage key={message.id} sender={message.sender} author={message.author}>
+        {message.content}
+      </ChatMessage>
+    ))}
+  </ChatMessageList>
+  <ChatComposer
+    onSend={(text) =>
+      setMessages([
+        ...messages,
+        { id: crypto.randomUUID(), sender: 'user', author: 'You', content: text },
+      ])
+    }
+  />
+</ChatShell>
+```
+
+## Variants
+
+| Variant | Layout | Use it for |
+|---|---|---|
+| `classic` | Single centered column (`max-w-3xl`) | Simple full-page chat without a sidebar |
+| `workspace` | Thread sidebar (column 1) + chat pane (column 2) on a `1fr`/`auto` row pair; below `md` the sidebar hides and the pane takes the full width | Product surfaces where users switch conversations |
+| `focus` | Immersive — the sidebar overlays as chrome, revealed on hover or keyboard focus (`:focus-within`); while hidden it is `pointer-events: none`, so taps pass through to the pane | Distraction-free chat, kiosk and demo screens |
+
+In the `workspace` variant place `ChatThreadList` plus the `ChatMessageList`
+and `ChatComposer` as **direct children** of the shell — the grid places the
+sidebar in column 1 and docks the composer under the scrolling log. On viewports
+narrower than `md` (768px) the sidebar hides entirely and the empty column
+collapses, so the conversation never gets squeezed into a sliver — pair the
+shell with your own mobile thread switcher (a drawer, a sheet or a select)
+instead of a squeezed two-column grid.
+
+## API
+
+### ChatShell
+
+The layout grid. Native props are forwarded to the root element; consumer
+`className` merges last.
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | `classic` \| `workspace` \| `focus` | `classic` |
+
+### ChatThreadList
+
+A labeled `<nav>` of thread buttons. In `focus` mode it renders as chrome
+revealed on hover/keyboard.
+
+| Prop | Type | Default |
+|---|---|---|
+| `threads` | `ChatThread[]` (`{ id, title, preview?, unread?, timestamp? }`) | — |
+| `activeId` | `string` | — |
+| `onSelect` | `(id: string) => void` | — |
+| `label` | `string` | `'Chat threads'` |
+
+`ChatThreadItem` renders one row: title, preview, unread badge (shown
+whenever `unread > 0`, with or without a `preview`), timestamp, and the active
+state via `aria-current` + `data-active`. It is a native `<button>`, so
+keyboard operation is free.
+
+### ChatMessageList
+
+A keyboard-focusable `role="log"` region with `aria-live="polite"` (scroll it
+with the keyboard like any other scroll region). It follows the latest content
+only while the reader is already at the bottom — scroll up to reread and
+re-renders, streaming included, never yank the scroll position until you return
+to the bottom. While `streaming`, the log is marked `aria-busy` so screen
+readers defer announcements instead of re-reading the growing message on every
+token chunk; the completed message lands as a single announcement when the
+stream ends. Compose `ChatMessage` children.
+
+| Prop | Type | Default |
+|---|---|---|
+| `streaming` | `boolean` | `false` — appends the streaming cursor after the messages |
+
+### ChatMessage
+
+| Prop | Type | Default |
+|---|---|---|
+| `sender` | `user` \| `assistant` (rendered as `data-role`) | — |
+| `author` | `string` | — |
+| `avatarInitial` | `string` | First character of `author` |
+| `timestamp` | `string \| Date` | — (today renders as `HH:mm`, older as a short date) |
+| `streaming` | `boolean` | `false` — appends the cursor to this message |
+
+### ChatComposer
+
+Textarea with an actions slot and a labeled send button. Plain Enter sends,
+Shift+Enter inserts a newline, IME composition is respected on every engine —
+including Safari, which fires `compositionend` before the committing keydown
+(WebKit bug 165004), so a CJK composition is never sent prematurely — and the
+draft clears after a send — persist it via `onSend`. The textarea auto-grows
+with the draft up to `max-h-40` and scrolls inside that cap. The send button
+disables while the draft is blank.
+
+| Prop | Type | Default |
+|---|---|---|
+| `onSend` | `(text: string) => void` | — |
+| `actions` | `ReactNode` | — |
+| `sendLabel` | `string` | `'Send message'` |
+| `placeholder` | `string` | `'Type a message…'` |
+| `value` / `onChange` | Controlled draft (optional) | Internal state |
+| `disabled` | `boolean` | `false` |
+
+Every Orion component ships with: TypeScript types, dark/light parity, WCAG
+AA keyboard and focus behavior, and a passing test suite written before the
+implementation.
