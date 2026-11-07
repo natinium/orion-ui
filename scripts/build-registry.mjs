@@ -14,6 +14,10 @@ const OUT_DIR = resolve(ROOT, 'apps/docs/public/r');
 
 /** @type {Array<{ slug: string, title: string, description: string, source: string, target: string, type: string, dependencies: string[] }>} */
 const items = [
+  { slug: 'chat-shell', title: 'Chat Shell', description: 'Full-page AI chat layouts in classic, workspace and focus variants — thread list, streaming message list and composer dock.', source: 'packages/registry/src/ui/chat-shell.tsx', target: 'ui/chat-shell.tsx', type: 'registry:ui', dependencies: [] },
+
+  { slug: 'calendar-scheduler', title: 'Calendar Scheduler', description: 'Month and agenda views with event chips, drag-to-reschedule and a today highlight — the highest-voted blocks request in shadcn history.', source: 'packages/registry/src/ui/calendar-scheduler.tsx', target: 'ui/calendar-scheduler.tsx', type: 'registry:ui', dependencies: [] },
+
   { slug: 'file-uploader', title: 'File Uploader', description: 'Dropzone with queue, per-file progress, retry and error states.', source: 'packages/registry/src/ui/file-uploader.tsx', target: 'ui/file-uploader.tsx', type: 'registry:ui', dependencies: [] },
 
   { slug: 'time-picker', title: 'Time Picker', description: 'Time selection with hour/minute columns, 12/24h toggle, seconds granularity and timezone hint.', source: 'packages/registry/src/ui/time-picker.tsx', target: 'ui/time-picker.tsx', type: 'registry:ui', dependencies: [] },
