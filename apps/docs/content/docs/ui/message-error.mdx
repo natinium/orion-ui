@@ -1,0 +1,77 @@
+---
+title: Message Error
+description: Failed-run and stopped-run states with retry path and keep-partial-answer.
+---
+
+import { MessageError } from '@orion-ui/registry';
+
+## Preview
+
+<div className="not-prose flex max-w-md flex-col gap-4 py-6">
+  <MessageError kind="failed" />
+  <MessageError
+    kind="stopped"
+    message="Paused by the user after 240 tokens."
+  />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/message-error.json
+```
+
+## Usage
+
+```tsx
+import { MessageError } from '@/components/ui/message-error'
+```
+
+```tsx
+{run.error ? (
+  <MessageError kind="failed" onRetry={retry} onKeep={keepPartial} />
+) : run.stopped ? (
+  <MessageError kind="stopped" onRetry={retry} onKeep={keepPartial} />
+) : null}
+```
+
+`failed` renders the destructive tint and is announced assertively
+(`role="alert"`); `stopped` renders a neutral tint and is announced politely
+(`role="status"`). Retry and Keep partial answer render only when their
+handler is provided — the card never shows a dead action.
+
+## API
+
+| Prop | Type | Default |
+|---|---|---|
+| `kind` | `'failed'` \| `'stopped'` | — |
+| `onRetry` | `() => void` | — (button hidden) |
+| `onKeep` | `() => void` | — (button hidden) |
+| `message` | `string` | per-kind default |
+| `labels` | `Partial<MessageErrorLabels>` | English defaults |
+
+## Variants
+
+`kind` is the card's variant set, built with `cva` and mirrored onto the root
+as `data-variant="failed" | "stopped"` for tests and consumer CSS. The class
+sets are exported for composition:
+
+```tsx
+import { messageErrorVariants } from '@/components/ui/message-error'
+
+messageErrorVariants({ kind: 'failed' }) // border-destructive/30 bg-destructive/10 …
+```
+
+## Localization
+
+Every user-facing string is overridable through `labels`; the detail line has
+its own `message` prop:
+
+```tsx
+<MessageError
+  kind="failed"
+  onRetry={() => {}}
+  labels={{ failed: 'Fehlgeschlagen', retry: 'Erneut versuchen', keepPartial: 'Teilantwort behalten' }}
+  message="Limit erreicht."
+/>
+```

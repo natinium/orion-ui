@@ -1,0 +1,78 @@
+---
+title: Message Revisions
+description: Branch picker for regenerations plus inline edit-and-resend of a sent message.
+---
+
+import { MessageRevisions } from '@orion-ui/registry';
+
+## Preview
+
+<div className="not-prose max-w-md py-6">
+  <MessageRevisions
+    content="Deploy finished in 42 seconds."
+    total={3}
+  />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/message-revisions.json
+```
+
+## Usage
+
+```tsx
+import { MessageRevisions } from '@/components/ui/message-revisions'
+```
+
+```tsx
+<MessageRevisions
+  content={message.text}
+  total={message.branches.length}
+  onBranchChange={(branch) => loadBranch(message.id, branch)}
+  onEdit={(text) => resend(message.id, text)}
+/>
+```
+
+Navigation is **clamped, not wrapping**: at the first branch "previous"
+disables, at the last branch "next" disables. The picker only renders at
+`total >= 2` and starts on the latest branch. Editing swaps the message for a
+textarea — Save commits via `onEdit`, Escape or Cancel reverts without saving.
+The displayed text follows the `content` prop until the user saves a local
+edit; from then on the local edit wins over later `content` changes.
+
+## API
+
+| Prop | Type | Default |
+|---|---|---|
+| `content` | `string` | — |
+| `total` | `number` | `1` (picker hidden) |
+| `index` | `number` | `total` (initial branch — navigation is internal afterwards) |
+| `onBranchChange` | `(index: number) => void` | — |
+| `onEdit` | `(newText: string) => void` | — |
+| `labels` | `Partial<MessageRevisionsLabels>` | English defaults |
+
+**Accessibility:** the position label is `aria-live="polite"` so branch moves
+are announced; the textarea is labeled ("Edit message") and Escape cancels.
+Focus moves into the textarea when editing starts and returns to the Edit
+button on Save, Cancel and Escape — keyboard focus never drops to `<body>`.
+
+## Localization
+
+Every user-facing string is overridable through `labels`:
+
+```tsx
+<MessageRevisions
+  content={message.text}
+  total={2}
+  labels={{
+    edit: 'Modifier',
+    save: 'Enregistrer',
+    cancel: 'Annuler',
+    editMessage: 'Modifier le message',
+    previousBranch: 'Branche précédente',
+    nextBranch: 'Branche suivante',
+  }}
+/>
+```

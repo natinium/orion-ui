@@ -1,0 +1,72 @@
+---
+title: Message Actions
+description: Hover action bar — copy, regenerate and thumbs rating with a selected state.
+---
+
+import { MessageActions } from '@orion-ui/registry';
+
+## Preview
+
+{/* The bar is hover/focus-revealed; the wrapper class holds it open for the static preview. */}
+<div className="not-prose group py-6 [&_[data-slot=message-actions-bar]]:opacity-100">
+  <MessageActions
+    content="Revenue grew 12% quarter over quarter."
+  />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/message-actions.json
+```
+
+## Usage
+
+```tsx
+import { MessageActions } from '@/components/ui/message-actions'
+```
+
+```tsx
+<MessageActions
+  content={message.text}
+  onRegenerate={() => regenerate(message.id)}
+  onRate={(value) => trackFeedback(message.id, value)}
+/>
+```
+
+Copy writes `content` to the clipboard and shows "Copied" for two seconds.
+The bar is invisible until the message is hovered **or** one of its buttons
+holds keyboard focus (`focus-within`), so pointer and keyboard users get the
+same affordance.
+
+## API
+
+| Prop | Type | Default |
+|---|---|---|
+| `content` | `string` | — |
+| `onRegenerate` | `() => void` | — |
+| `onRate` | `(value: 'up' \| 'down') => void` | — |
+| `labels` | `Partial<MessageActionsLabels>` | English defaults |
+
+**Accessibility:** announced as `role="toolbar"`. Rating buttons are
+`aria-pressed` toggles; selecting the active direction again deselects it
+without firing `onRate`.
+
+## Localization
+
+Every user-facing string is overridable through `labels` — each key names
+one action wherever it appears (visible text, `title`, accessible name):
+
+```tsx
+<MessageActions
+  content={message.text}
+  labels={{
+    toolbar: 'Actions du message',
+    copy: 'Copier',
+    copied: 'Copié',
+    regenerate: 'Régénérer la réponse',
+    rateUp: 'Bonne réponse',
+    rateDown: 'Mauvaise réponse',
+  }}
+/>
+```

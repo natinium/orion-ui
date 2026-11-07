@@ -1,0 +1,75 @@
+---
+title: Message Pair
+description: User bubble plus assistant streaming reply with speaker identity, timestamps and part rendering.
+---
+
+import { MessagePair } from '@orion-ui/registry';
+
+## Preview
+
+<div className="not-prose max-w-md py-6">
+  <MessagePair
+    userMessage="Summarize the Q3 report in two lines."
+    assistantContent={<p>Revenue grew 12% quarter over quarter, led by the EU segment. Churn held flat at 2.1%.</p>}
+    userAt="14:32"
+    assistantAt="14:32"
+    names={{ user: 'Ada', assistant: 'Orion' }}
+  />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/message-pair.json
+```
+
+## Usage
+
+```tsx
+import { MessagePair } from '@/components/ui/message-pair'
+```
+
+```tsx
+<MessagePair
+  userMessage="Summarize the Q3 report in two lines."
+  assistantContent={<p>Revenue grew 12% quarter over quarter…</p>}
+  userAt={new Date('2026-11-07T14:32:00')}
+  assistantAt={new Date('2026-11-07T14:32:07')}
+  names={{ user: 'Ada', assistant: 'Orion' }}
+/>
+```
+
+The user message renders as a right-aligned primary-tinted bubble; the assistant
+reply is a plain left-aligned block, so streamed markdown/tool parts can be
+passed as `assistantContent` (or as `children`). Timestamps accept a `Date`
+(formatted to hour+minute with `Intl.DateTimeFormat`) or a preformatted
+`"HH:mm"` string.
+
+## API
+
+| Prop | Type | Default |
+|---|---|---|
+| `userMessage` | `string` | — |
+| `assistantContent` | `React.ReactNode` | — (falls back to `children`) |
+| `userAt` | `Date \| string` | — (no timestamp) |
+| `assistantAt` | `Date \| string` | — (no timestamp) |
+| `names` | `{ user?: string; assistant?: string }` | `{ user: 'You', assistant: 'Assistant' }` |
+
+**Accessibility:** the pair is announced as a list of two messages
+(`role="list"` / `listitem`); each initials circle is `role="img"` with the
+speaker's name, and timestamps use `<time dateTime>`.
+
+## Localization
+
+The pair ships no hardcoded UI strings. The English speaker defaults
+(`'You'` / `'Assistant'`) are replaced through `names`, and `Date`
+timestamps render through `Intl.DateTimeFormat` with the machine locale, so
+no override prop is needed:
+
+```tsx
+<MessagePair
+  userMessage="Hallo"
+  assistantContent="Hi there"
+  names={{ user: 'Ich', assistant: 'Orion' }}
+/>
+```
