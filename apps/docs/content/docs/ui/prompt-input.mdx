@@ -1,0 +1,109 @@
+---
+title: "Prompt Input"
+description: "Unified composer: auto-growing text area, attachment tray slot, model chip, send and mode selector, slash commands, @mentions and draft restore."
+---
+
+import { PromptInput } from '@orion-ui/registry/ui/prompt-input';
+
+## Preview
+
+<div className="not-prose max-w-xl py-6">
+  <PromptInput
+    modelChip="orion-large"
+    commands={[
+      { name: 'doc', prompt: 'Draft documentation for ' },
+      { name: 'image', prompt: 'Generate an image of ' },
+      { name: 'deploy', prompt: 'Deploy the app to ' },
+    ]}
+    mentions={['alice', 'bob']}
+  />
+</div>
+
+Try it: type `/` for the command hint row, `@` for mention candidates, **Enter** to send,
+**Shift+Enter** for a newline. IME-safe: the Enter that commits a composition (Chinese,
+Japanese, Korean…) never sends.
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/prompt-input.json
+```
+
+## Usage
+
+```tsx
+import { PromptInput } from '@/components/ui/prompt-input'
+```
+
+Controlled draft (restores survive thread switches — the consumer owns the value):
+
+```tsx
+<PromptInput
+  value={draft}
+  onValueChange={setDraft}
+  onSend={(text) => run(text)}
+  commands={[{ name: 'doc', prompt: 'Draft documentation for ' }]}
+  mentions={['alice', 'bob']}
+  modelChip="orion-large"
+/>
+```
+
+Uncontrolled — the composer owns the draft and reports every change:
+
+```tsx
+<PromptInput onValueChange={setDraft} onSend={(text) => run(text)} />
+```
+
+Compose the attachment tray above the footer through `children`:
+
+```tsx
+<PromptInput onSend={run}>
+  <AttachmentStaging attachments={staged} onRemove={unstage} onRetry={retry} />
+</PromptInput>
+```
+
+## Behavior
+
+- **Enter** sends (blank drafts are rejected — the send button is disabled and a blank
+  Enter is swallowed, never inserted as a newline). **Shift+Enter** inserts a newline.
+- **IME-safe on every engine**: committing Enters are skipped while `isComposing`
+  (Chrome/Firefox) and via the legacy IME keyCode 229 plus tracked composition state on
+  Safari, which fires `compositionend` before the committing keydown (WebKit bug 165004).
+  While a composition is active, **Escape belongs to the IME** — canceling the candidate
+  window never dismisses the suggestion row.
+- Accepting a suggestion by click hands focus back to the textarea, so typing continues
+  without a stray click.
+- **Slash commands**: typing `/` opens a filtered hint row of `{name, prompt}` matches;
+  ArrowDown/ArrowUp move, Enter or click accepts and fills the composer with the
+  command's `prompt`. Escape dismisses until the text changes again.
+- **@mentions**: typing `@` opens a filtered candidate row; accepting inserts `@name`
+  and detected mentions are highlighted as chips in the footer.
+- The suggestion row renders **inline (no portal)**, so the composer behaves identically
+  inside Dialog, Sheet and Shadow DOM.
+
+## API
+
+Props are forwarded to the underlying elements. The textarea is a combobox while a
+suggestion listbox is open (WAI-ARIA combobox pattern, `aria-activedescendant`).
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `string` | — (uncontrolled) |
+| `onValueChange` | `(text: string) => void` | — |
+| `onSend` | `(text: string) => void` | — |
+| `commands` | `{ name: string; prompt: string }[]` | — |
+| `mentions` | `string[]` | — |
+| `modelChip` | `string` | — (chip hidden) |
+| `mode` | `chat` \| `agent` \| `search` | — (internal, `chat`) |
+| `onModeChange` | `(mode: PromptInputMode) => void` | — |
+| `placeholder` | `string` | `Ask anything…` |
+| `disabled` | `boolean` | `false` |
+
+Every Orion component ships with: TypeScript types, dark/light parity, WCAG AA keyboard
+and focus behavior, and a passing test suite written before the implementation.
+
+Accessibility notes: keyboard — Enter sends, Shift+Enter newlines, arrows move in the
+suggestion row, Escape dismisses; screen readers — the textarea is a labeled combobox
+with `aria-expanded`/`aria-controls`, suggestions are a `listbox` of `option`s, the mode
+selector is a `<fieldset>`-based group of `aria-pressed` toggle buttons, the send button
+is a labeled icon button.

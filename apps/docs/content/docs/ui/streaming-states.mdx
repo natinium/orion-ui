@@ -1,0 +1,66 @@
+---
+title: "Streaming States"
+description: "Token-arrival text with cursor, thinking indicator with elapsed time and queued-while-running with cancel."
+---
+
+import { QueuedNotice, StreamingText, ThinkingIndicator } from '@orion-ui/registry/ui/streaming-states';
+
+## Preview
+
+<div className="not-prose flex max-w-xl flex-col gap-3 py-6">
+  <StreamingText>Summarizing the Q3 metrics report…</StreamingText>
+  <ThinkingIndicator />
+  <QueuedNotice position={2} />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/streaming-states.json
+```
+
+## Usage
+
+```tsx
+import { QueuedNotice, StreamingText, ThinkingIndicator } from '@/components/ui/streaming-states'
+```
+
+Token-arrival text — the blink is pure CSS (`animate-pulse`, off under
+`prefers-reduced-motion`), no JS timer:
+
+```tsx
+{streaming ? <StreamingText>{partialAnswer}</StreamingText> : <p>{answer}</p>}
+```
+
+Thinking indicator with elapsed seconds — ticks internally (interval cleared on
+unmount), or pass `elapsed` to drive it from your own clock (then no timer runs):
+
+```tsx
+<ThinkingIndicator />
+<ThinkingIndicator label="Reviewing files" elapsed={secondsSinceStart} />
+```
+
+Queued while running — position in the queue plus a cancel path:
+
+```tsx
+<QueuedNotice position={2} onCancel={() => dequeue(messageId)} />
+```
+
+## API
+
+| Component | Prop | Type | Default |
+|---|---|---|---|
+| `StreamingText` | — | `React.ComponentProps<'p'>` | — |
+| `ThinkingIndicator` | `label` | `string` | `Thinking` |
+| `ThinkingIndicator` | `elapsed` | `number` | — (ticks internally) |
+| `QueuedNotice` | `position` | `number` | required |
+| `QueuedNotice` | `onCancel` | `() => void` | — (button hidden) |
+
+Every Orion component ships with: TypeScript types, dark/light parity, WCAG AA keyboard
+and focus behavior, and a passing test suite written before the implementation.
+
+Accessibility notes: all three states are polite `status` regions; `StreamingText` is
+marked `aria-busy` so screen readers defer announcing until the stream ends instead of
+re-reading the growing message per chunk; `ThinkingIndicator`'s seconds readout and
+`StreamingText`'s cursor are `aria-hidden` decoration; `QueuedNotice`'s cancel button is
+a labeled native button.

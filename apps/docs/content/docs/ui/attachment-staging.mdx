@@ -1,0 +1,63 @@
+---
+title: "Attachment Staging"
+description: "Attachment tray with per-file progress, type badges and retry."
+---
+
+import { AttachmentStaging } from '@orion-ui/registry/ui/attachment-staging';
+
+## Preview
+
+<div className="not-prose max-w-xl py-6">
+  <AttachmentStaging
+    attachments={[
+      { id: 'a1', name: 'report.pdf', size: 524288, status: 'uploading', progress: 42 },
+      { id: 'a2', name: 'notes.txt', size: 2048, status: 'done', progress: 100 },
+      { id: 'a3', name: 'crash.log', size: 3221225472, status: 'error', progress: 0 },
+    ]}
+  />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/attachment-staging.json
+```
+
+## Usage
+
+```tsx
+import { AttachmentStaging } from '@/components/ui/attachment-staging'
+```
+
+```tsx
+<AttachmentStaging
+  attachments={staged}
+  onRemove={(id) => unstage(id)}
+  onRetry={(id) => uploadAgain(id)}
+/>
+```
+
+Presentational only: the tray renders the `attachments` array as given — your upload
+pipeline moves rows through `queued` → `uploading` (set `progress` 0–100, a real
+progressbar is rendered) → `done` / `error`. Errored rows show a retry button; every
+row shows a remove button. Pair it with `PromptInput` via its `children` slot.
+
+## API
+
+| Prop | Type | Default |
+|---|---|---|
+| `attachments` | `{ id: string; name: string; size: number; status: 'queued' \| 'uploading' \| 'done' \| 'error'; progress?: number }[]` | required |
+| `onRemove` | `(id: string) => void` | — |
+| `onRetry` | `(id: string) => void` | — (retry button hidden) |
+
+Sizes render human-readable ("512 B", "2.0 KB", "5.0 MB", "3.0 GB"); the type badge is
+derived from the file extension (v0: a plain text badge like `PDF` or `PNG` — no
+per-format artwork, no image previews).
+
+Every Orion component ships with: TypeScript types, dark/light parity, WCAG AA keyboard
+and focus behavior, and a passing test suite written before the implementation.
+
+Accessibility notes: the tray is a labeled list (`Staged attachments`), each row exposes
+its state via `data-status`, uploading rows carry a `progressbar` with value
+attributes named after the file, and the remove/retry buttons are labeled with the
+file's name (e.g. "Remove report.pdf", "Retry crash.log").
