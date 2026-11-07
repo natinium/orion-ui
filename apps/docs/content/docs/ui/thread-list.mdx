@@ -1,0 +1,82 @@
+---
+title: "Thread List"
+description: "Conversation sidebar with search, pins, rename, unread states and thread actions."
+---
+
+import { ThreadList, ThreadListSearch } from '@orion-ui/registry';
+
+## Preview
+
+<div className="not-prose flex py-6">
+  <ThreadList
+    className="w-80 rounded-xl border p-2"
+    threads={[
+      { id: 'billing', title: 'Billing migration', preview: 'Move invoices to D1', pinned: true, updatedAt: '2026-11-01T09:00:00Z' },
+      { id: 'onboarding', title: 'Onboarding copy', preview: 'Tighten step two', updatedAt: '2026-11-05T08:00:00Z' },
+      { id: 'auth', title: 'Refactor auth flow', preview: 'Split the token refresh out', unread: true, updatedAt: '2026-11-03T10:00:00Z' },
+    ]}
+    activeId="onboarding"
+  >
+    <ThreadListSearch />
+  </ThreadList>
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/thread-list.json
+```
+
+## Usage
+
+```tsx
+import { ThreadList, ThreadListSearch } from '@/components/ui/thread-list'
+```
+
+```tsx
+<ThreadList
+  threads={threads}
+  activeId={activeId}
+  onSelect={setActiveId}
+  onPinToggle={(id) => togglePin(id)}
+  onRename={(id, title) => renameThread(id, title)}
+  onDelete={(id) => deleteThread(id)}
+>
+  <ThreadListSearch />
+</ThreadList>
+```
+
+Threads are sorted for you: pinned first, then by `updatedAt` descending.
+Double-click a title to rename inline — Enter or blur commits, Escape cancels.
+Deleting asks `window.confirm` before `onDelete` fires.
+
+## API
+
+| Prop | Type | Default |
+|---|---|---|
+| `threads` | `ThreadListThread[]` | required |
+| `activeId` | `string` | — |
+| `onSelect` | `(id: string) => void` | — |
+| `onPinToggle` | `(id: string) => void` | — |
+| `onRename` | `(id: string, title: string) => void` | — |
+| `onDelete` | `(id: string) => void` | — |
+
+`ThreadListThread`: `{ id, title, preview?, unread?, pinned?, updatedAt? }` —
+`updatedAt` accepts an ISO string, epoch number or `Date`.
+
+`ThreadListSearch` renders the filter field; it must sit inside `<ThreadList>`
+and matches titles case-insensitively. Its `className` styles the field wrapper;
+all other props forward to the native `<input>`.
+
+## Accessibility
+
+- Keyboard: Tab reaches the search field, thread rows, pin and delete buttons;
+  focus is visible on every interactive element. While renaming, Enter commits
+  and Escape cancels.
+- IME: keydowns inside a composition (`isComposing`, or the legacy `keyCode`
+  229) are ignored, so committing or cancelling a composition never commits or
+  cancels the rename.
+- Screen reader: rows are a native list; the active row is announced via
+  `aria-current="true"`; pin buttons carry `aria-pressed` plus `Pin`/`Unpin`
+  labels; delete buttons announce `Delete <title>`; an empty search result is
+  announced through a `role="status"` region.

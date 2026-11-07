@@ -1,0 +1,75 @@
+---
+title: "Model Selector"
+description: "Searchable grouped provider/model picker with capability badges."
+---
+
+import { ModelSelector } from '@orion-ui/registry';
+
+## Preview
+
+<div className="not-prose flex py-6">
+  <ModelSelector
+    className="max-w-xs"
+    models={[
+      { id: 'gpt-5', label: 'GPT-5', provider: 'OpenAI', capabilities: ['vision', 'tools'] },
+      { id: 'gpt-5-mini', label: 'GPT-5 mini', provider: 'OpenAI', capabilities: ['fast'] },
+      { id: 'claude-sonnet', label: 'Claude Sonnet 4.5', provider: 'Anthropic', capabilities: ['vision', 'fast'] },
+      { id: 'gemini-pro', label: 'Gemini 3 Pro', provider: 'Google', capabilities: ['tools'] },
+    ]}
+    placeholder="Select a model"
+  />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-ui.vercel.app/r/model-selector.json
+```
+
+## Usage
+
+```tsx
+import { ModelSelector } from '@/components/ui/model-selector'
+```
+
+```tsx
+<ModelSelector
+  models={models}
+  value={modelId}
+  onValueChange={setModelId}
+  open={open}
+  onOpenChange={setOpen}
+/>
+```
+
+Options are grouped under one header per `provider` (first-appearance order).
+Search matches a model's label **or** its provider, case-insensitively. Both
+`value` and `open` are controlled; omit `open` and the panel state falls back
+to internal state (useful for quick demos like the preview above).
+
+## API
+
+| Prop | Type | Default |
+|---|---|---|
+| `models` | `ModelSelectorModel[]` | required |
+| `value` | `string` | — |
+| `onValueChange` | `(id: string) => void` | — |
+| `open` | `boolean` | uncontrolled |
+| `onOpenChange` | `(open: boolean) => void` | — |
+| `placeholder` | `string` | `"Select a model"` |
+
+`ModelSelectorModel`: `{ id, label, provider, capabilities? }` — each entry in
+`capabilities` (e.g. `vision`, `tools`, `fast`) renders as a badge on the row.
+
+## Accessibility
+
+- Keyboard: the trigger opens with click or ArrowDown; the search field is a
+  combobox — ArrowDown/ArrowUp cycle the active option, Enter selects it,
+  Escape closes the panel.
+- IME: keydowns inside a composition (`isComposing`, or the legacy `keyCode`
+  229) are ignored, so candidate navigation, composition commit and composition
+  cancel are never hijacked by the listbox.
+- Screen reader: the field exposes `aria-expanded`, `aria-controls` and
+  `aria-activedescendant`; options are `role="option"` with `aria-selected`;
+  provider headers are labelled `role="group"` regions; an empty search result
+  is announced through a `role="status"` region.
