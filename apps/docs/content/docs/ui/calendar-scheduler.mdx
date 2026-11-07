@@ -1,0 +1,136 @@
+---
+title: "Calendar Scheduler"
+description: "Month and agenda views with event chips, drag-to-reschedule and a today highlight — the highest-voted blocks request in shadcn history."
+---
+
+import { CalendarScheduler } from '@orion-ui/registry';
+
+export const pad = (n) => String(n).padStart(2, '0')
+
+export const sampleEvents = (() => {
+  const now = new Date()
+  const day = (date, hour, minute) =>
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(hour)}:${pad(minute)}`
+  const at = (dayOfMonth, hour, minute) => day(new Date(now.getFullYear(), now.getMonth(), dayOfMonth), hour, minute)
+  return [
+    { id: 'kickoff', title: 'Project kickoff', start: at(3, 10, 0), end: at(3, 11, 0), color: '#6366f1' },
+    { id: 'design-review', title: 'Design review', start: at(12, 14, 30), end: at(12, 16, 0), color: '#0ea5e9' },
+    { id: 'one-on-one', title: '1:1 with Ana', start: at(18, 9, 0), end: at(18, 9, 30), color: '#22c55e' },
+    { id: 'release-cut', title: 'Release cut', start: at(24, 17, 0), end: at(24, 18, 0), color: '#f97316' },
+  ]
+})()
+
+## Preview
+
+<div className="not-prose py-6">
+  <CalendarScheduler events={sampleEvents} />
+</div>
+
+Drag a chip onto another day to reschedule it — or focus a chip and use the
+arrow keys. The component reports `onEventMove(eventId, newStart)` and you
+apply the move to your own state.
+
+### Agenda view
+
+<div className="not-prose max-w-md py-6">
+  <CalendarScheduler events={sampleEvents} defaultView="agenda" />
+</div>
+
+## Install
+
+```bash
+npx shadcn@latest add https://orion-registry.vercel.app/r/calendar-scheduler.json
+```
+
+## Usage
+
+```tsx
+import { CalendarScheduler } from '@/components/ui/calendar-scheduler'
+```
+
+```tsx
+<CalendarScheduler
+  events={[
+    {
+      id: 'standup',
+      title: 'Standup',
+      start: '2026-11-16 09:00',
+      end: '2026-11-16 09:15',
+      color: '#0ea5e9',
+    },
+  ]}
+  defaultView="month"
+  onEventMove={(eventId, newStart) => console.log(eventId, newStart)}
+  onSelectEvent={(event) => console.log(event.id)}
+  onViewChange={(view) => console.log(view)}
+/>
+```
+
+Dates accept ISO strings or local `'YYYY-MM-DD'` with an optional `'HH:mm'` —
+`'2026-11-15'`, `'2026-11-15 14:30'`, `'2026-11-15T14:30'` and
+`'2026-11-15T14:30:00Z'` all work. Timezone-naive strings are treated as local
+time, so `'2026-11-15'` always means November 15, never a UTC-shifted day.
+
+## Behavior
+
+- **Month view** — six-week grid with real date math; leading and trailing
+  days from adjacent months are dimmed, today carries `aria-current="date"`
+  and a highlighted day number. Chips are capped at 3 per day, then a
+  `+N more` button expands that day's hidden events in a focusable panel
+  below the grid.
+- **Drag to reschedule** — chips use native HTML5 drag and drop and store the
+  event id on `dataTransfer`. Dropping a chip on a day calls
+  `onEventMove(id, newStart)` with a `"YYYY-MM-DDTHH:mm"` local timestamp that
+  keeps the original time-of-day. The component never mutates `events` — apply
+  the move in your state and pass the updated array back.
+- **Keyboard reschedule** — focus a chip and press ←/→ to move it by a day,
+  ↑/↓ by a week. Each move calls `onEventMove(id, newStart)` with the
+  time-of-day preserved, focus follows the moved chip (or lands on the target
+  day cell when the chip collapses behind `+N more`), and a live region
+  announces it.
+- **Agenda view** — every event grouped by date and sorted chronologically,
+  with relative `Today`/`Tomorrow` headings.
+- **Accessibility** — the toolbar is a labeled `role="group"` with an aria-live
+  month title; every chip is a real button (Enter/Space activates
+  `onSelectEvent`, arrow keys reschedule) with an accessible name like
+  "Design review on November 15, 2026". The `+N more` panel takes focus when
+  it opens, and Close or Escape returns focus to the button. View switches
+  and moves are announced through a `role="status"` live region. Events with
+  duplicate `id`s are reported with a console error in development.
+
+## API
+
+### `<CalendarScheduler />`
+
+| Prop | Type | Default |
+|---|---|---|
+| `events` | `CalendarSchedulerEvent[]` | — (required) |
+| `defaultView` | `'month'` \| `'agenda'` | `'month'` |
+| `onViewChange` | `(view: 'month' \| 'agenda') => void` | — |
+| `onEventMove` | `(eventId: string, newStart: string) => void` | — |
+| `onSelectEvent` | `(event: CalendarSchedulerEvent) => void` | — |
+| `className` | `string` | — |
+
+```ts
+interface CalendarSchedulerEvent {
+  id: string
+  title: string
+  start: string
+  end: string
+  color?: string // CSS color used as the chip accent; text contrast stays token-driven
+}
+```
+
+### Sub-components
+
+- `<CalendarToolbar title view onPrevious onNext onToday onViewChange />` — the
+  labeled navigation bar, exported for custom chrome.
+- `<CalendarAgendaList events today? />` — the grouped, chronological agenda,
+  exported for standalone use.
+
+Pure helpers are exported too: `parseEventDate(input)`, `buildMonthGrid(year,
+month)` and `moveEventStart(event, targetDay)`.
+
+Every Orion component ships with: TypeScript types, dark/light parity, WCAG AA
+keyboard and focus behavior, and a passing test suite written before the
+implementation.
